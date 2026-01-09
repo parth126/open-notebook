@@ -9,19 +9,12 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/hooks/use-auth'
 import { useSidebarStore } from '@/lib/stores/sidebar-store'
-import { useCreateDialogs } from '@/lib/hooks/use-create-dialogs'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -35,7 +28,6 @@ import {
   ChevronLeft,
   Menu,
   FileText,
-  Plus,
   Wrench,
   Command,
 } from 'lucide-react'
@@ -66,33 +58,17 @@ const navigation = [
   },
 ] as const
 
-type CreateTarget = 'source' | 'notebook' | 'podcast'
-
 export function AppSidebar() {
   const pathname = usePathname()
   const { logout } = useAuth()
   const { isCollapsed, toggleCollapse } = useSidebarStore()
-  const { openSourceDialog, openNotebookDialog, openPodcastDialog } = useCreateDialogs()
 
-  const [createMenuOpen, setCreateMenuOpen] = useState(false)
   const [isMac, setIsMac] = useState(true) // Default to Mac for SSR
 
   // Detect platform for keyboard shortcut display
   useEffect(() => {
     setIsMac(navigator.platform.toLowerCase().includes('mac'))
   }, [])
-
-  const handleCreateSelection = (target: CreateTarget) => {
-    setCreateMenuOpen(false)
-
-    if (target === 'source') {
-      openSourceDialog()
-    } else if (target === 'notebook') {
-      openNotebookDialog()
-    } else if (target === 'podcast') {
-      openPodcastDialog()
-    }
-  }
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -152,83 +128,6 @@ export function AppSidebar() {
             isCollapsed ? 'px-2' : 'px-3'
           )}
         >
-          <div
-            className={cn(
-              'mb-4',
-              isCollapsed ? 'px-0' : 'px-3'
-            )}
-          >
-            <DropdownMenu open={createMenuOpen} onOpenChange={setCreateMenuOpen}>
-              {isCollapsed ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        onClick={() => setCreateMenuOpen(true)}
-                        variant="default"
-                        size="sm"
-                        className="w-full justify-center px-2 bg-primary hover:bg-primary/90 text-primary-foreground border-0"
-                        aria-label="Create"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Create</TooltipContent>
-                </Tooltip>
-              ) : (
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    onClick={() => setCreateMenuOpen(true)}
-                    variant="default"
-                    size="sm"
-                    className="w-full justify-start bg-primary hover:bg-primary/90 text-primary-foreground border-0"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create
-                  </Button>
-                </DropdownMenuTrigger>
-              )}
-
-              <DropdownMenuContent
-                align={isCollapsed ? 'end' : 'start'}
-                side={isCollapsed ? 'right' : 'bottom'}
-                className="w-48"
-              >
-                <DropdownMenuItem
-                  onSelect={(event) => {
-                    event.preventDefault()
-                    handleCreateSelection('source')
-                  }}
-                  className="gap-2"
-                >
-                  <FileText className="h-4 w-4" />
-                  Source
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={(event) => {
-                    event.preventDefault()
-                    handleCreateSelection('notebook')
-                  }}
-                  className="gap-2"
-                >
-                  <Book className="h-4 w-4" />
-                  Notebook
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={(event) => {
-                    event.preventDefault()
-                    handleCreateSelection('podcast')
-                  }}
-                  className="gap-2"
-                >
-                  <Mic className="h-4 w-4" />
-                  Podcast
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
           {navigation.map((section, index) => (
             <div key={section.title}>
               {index > 0 && (
