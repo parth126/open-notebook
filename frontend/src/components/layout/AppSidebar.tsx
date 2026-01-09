@@ -42,14 +42,9 @@ import {
 
 const navigation = [
   {
-    title: 'Collect',
+    title: 'Resources',
     items: [
       { name: 'Sources', href: '/sources', icon: FileText },
-    ],
-  },
-  {
-    title: 'Process',
-    items: [
       { name: 'Notebooks', href: '/notebooks', icon: Book },
       { name: 'Ask and Search', href: '/search', icon: Search },
     ],
